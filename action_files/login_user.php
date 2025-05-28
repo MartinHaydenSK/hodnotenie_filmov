@@ -1,9 +1,11 @@
 <?php
 include_once './action_files/connecting_to_database.php';
+include_once 'protect.php';
+
 
 if ($_SERVER['REQUEST_METHOD'] == 'GET' && isset($_GET['submit_login'])) {
-    $email = $_GET['email_login'];
-    $heslo = $_GET['heslo_login'];
+    $email = Eprotect($_GET['email_login']);
+    $heslo = Tprotect($_GET['heslo_login']);
 
     if (empty($email) || empty($heslo)) {
         echo "Všetky polia sú povinné!<br>";
