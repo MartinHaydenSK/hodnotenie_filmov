@@ -2,13 +2,14 @@
 $error = "";
 $message = "";
 include_once './action_files/connecting_to_database.php';
+include_once 'protect.php';
 
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit'])) {
-    $meno = $_POST['meno'];
-    $priezvisko = $_POST['priezvisko'];
-    $email = $_POST['email'];
-    $heslo = password_hash($_POST['heslo'], PASSWORD_DEFAULT);
+    $meno = Nprotect($_POST['meno']);
+    $priezvisko = Nprotect($_POST['priezvisko']);
+    $email = Eprotect($_POST['email']);
+    $heslo = password_hash(Tprotect($_POST['heslo']), PASSWORD_DEFAULT);
     $sql = "SELECT * FROM hodnotenie_filmov.použivateľ WHERE email='$email'";
     $result = mysqli_query($conn, $sql);
 
