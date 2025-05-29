@@ -21,4 +21,6 @@ include_once './parts_of_website/nav_bar.php';
     }
     ?>
     <a href="./index.php">Späť na domovskú stránku</a>
+    <br>
+    <a href="action_files/logout.php">Odhlásiť sa</a>
 </section>
