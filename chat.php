@@ -45,7 +45,7 @@ if (isset($_COOKIE['user'])) {
  $result = mysqli_query($conn, $sqlSel);
 
  while($row = mysqli_fetch_assoc($result)){
-    echo "správa: ". $row['sprava'] . 'od: <a href="profil_pouzivatela.php?id=' . $row["id"] . '">' . $row['meno'] . '</a> ' . "zverejnené: " . $row['datum'] . "</br> </br>";
+    echo "správa: ". $row['sprava'] . ' od: <a href="profil_pouzivatela.php?id=' . $row["id"] . '">' . $row['meno'] . '</a> ' . " zverejnené: " . $row['datum'] . "</br> </br>";
  }
 ?>
 </form>
