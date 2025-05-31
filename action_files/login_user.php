@@ -19,6 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET' && isset($_GET['submit_login'])) {
             if (password_verify($heslo, $row['heslo'])) {
                 echo "Prihlásenie úspešné!";
                 $data = [
+                    "id" => $row['id'],
                     "meno" => $row['meno'],
                     "priezvisko" => $row['priezvisko'],
                     "email" => $row['email'],
