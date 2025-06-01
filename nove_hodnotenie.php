@@ -159,11 +159,16 @@ if (isset($_COOKIE['user'])) {
         $rating = $_POST['rating'];
         $ID_pouzivatel = $user_data['id'];
         $datum = date('Y-m-d');
+        $index = explode (' ', $nazov);
+        foreach($index as $i){
+          $indexing.= metaphone($i). ' ';
+        }
 
-        $sql = "INSERT INTO hodnotenie_filmov.hodnotenie (nazov, recenzia, žáner, rating, ID_pouzivatel, datum) VALUES ('$nazov', '$recenzia', '$žáner' , '$rating' , '$ID_pouzivatel', '$datum');";
+        $sql = "INSERT INTO hodnotenie_filmov.hodnotenie (nazov, recenzia, žáner, rating, ID_pouzivatel, datum, indexing) VALUES ('$nazov', '$recenzia', '$žáner' , '$rating' , '$ID_pouzivatel', '$datum', '$indexing');";
         mysqli_query($conn, $sql);
         
-        header("Location: " . $_SERVER['PHP_SELF']);
+        //header("Location: " . $_SERVER['PHP_SELF']);
+        header("Location: hodnotenie.php");
         exit;
     }
 }
@@ -174,40 +179,6 @@ if (isset($_COOKIE['user'])) {
     //echo date('Y-m-d');
     //echo time();
 ?>
-<form action="" method="post">
-    <label for="žáner_fil">Vyberte filmový žáner:</label>
-    <select name="žáner_fil" >
-      <option value="" disabled selected>-- Vyberte žáner --</option>
-      <option value="akcny">Akčný</option>
-      <option value="dobrodruzny">Dobrodružný</option>
-      <option value="animovany">Animovaný</option>
-      <option value="biograficky">Biografický</option>
-      <option value="komedia">Komédia</option>
-      <option value="krimi">Krimi</option>
-      <option value="dokumentarny">Dokumentárny</option>
-      <option value="drama">Dráma</option>
-      <option value="rodinny">Rodinný</option>
-      <option value="fantasy">Fantasy</option>
-      <option value="historicky">Historický</option>
-      <option value="horor">Horor</option>
-      <option value="mysteriozny">Mysteriózny</option>
-      <option value="romanticky">Romantický</option>
-      <option value="scifi">Sci-Fi</option>
-      <option value="sportovy">Športový</option>
-      <option value="thriller">Thriller</option>
-      <option value="vojnovy">Vojnový</option>
-      <option value="western">Western</option>
-      <option value="muzikal">Muzikál</option>
-      <option value="experimentálny">Experimentálny</option>
-    </select>
-    <label for="zoradenie">Vyberte filmový žáner:</label>
-    <select name="zoradenie" >
-      <option value="" disabled selected>-- Vyberte zoradenie --</option>
-      <option value="DESC">Zostupne</option>
-      <option value="ASC">Vzostupne</option>
-    </select>
-    <input type="submit" name="submit" id="" value="Filtrovať"/> 
-    </form>
 
 <script>
     function updateRating(value) {

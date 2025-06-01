@@ -2,6 +2,7 @@
 include_once './parts_of_website/nav_bar.php';
 include_once './action_files/connecting_to_database.php';
 include_once 'action_files/protect.php';
+$search_ind = "";
 ?>
 
 <!DOCTYPE html>
@@ -17,12 +18,17 @@ if (isset($_COOKIE['user'])) {
         $user_data = json_decode($_COOKIE['user'], true);
         $user_name = $user_data['meno'] . " " . $user_data['priezvisko'];
         echo "<h2>Si prihlásený ako, $user_name</h2>";
-        echo "<a href='nove_hodnotenie.php'>NAPÍSAŤ RECENZIU</a> ";
+        echo "<a href='nove_hodnotenie.php'>NAPÍSAŤ RECENZIU</a> </br></br>";
         
         } else {
         echo "Ste príhlásený ako hosť (ak chceťe zverejňovať príspevky, musíte sa prihlásiť). </br></br>";
     }
 ?>
+<form action="" method="get">
+<input type="text" name="search" placeholder="hladať podla názvu">
+<input type="submit" name="hladať" value="hladať"/>
+</form>
+</br>
 <form action="" method="post">
     <label for="žáner_fil">Vyberte filmový žáner:</label>
     <select name="žáner_fil" >
@@ -57,18 +63,43 @@ if (isset($_COOKIE['user'])) {
     </select>
     <input type="submit" name="submit" id="" value="Filtrovať"/> 
     </form>
+    <form action="hodnotenie.php">
+    <input type="submit" name="submit" id="" value="Vymazať filtre"/> 
+    </form>
 <?php 
+if($_SERVER['REQUEST_METHOD'] == 'GET' && isset($_GET['hladať']) && $_GET['hladať'] == "hladať"){
+    echo"hladá sa";
+    if(!empty($_GET['search'])){
+    $search = explode (' ', $_GET['search']);
+        foreach($search as $i){
+          $search_ind.= metaphone($i). ' ';
+        }
+        $sqlSel = "SELECT hodnotenie.nazov, hodnotenie.recenzia, hodnotenie.žáner, hodnotenie.rating, hodnotenie.datum, použivateľ.meno, použivateľ.id FROM hodnotenie 
+        JOIN použivateľ ON hodnotenie.ID_pouzivatel = použivateľ.id WHERE hodnotenie.indexing LIKE '%$search_ind%'";
+        $result = mysqli_query($conn, $sqlSel);
+        if(mysqli_num_rows($result) > 0){
+        while($row = mysqli_fetch_assoc($result)){
+        echo "film: ". $row['nazov'] . " recenzia: ". $row['recenzia'] . "</br>hodnotenie: ". $row['rating'] . ' od: <a href="profil_pouzivatela.php?id=' . $row["id"] . '">' . $row['meno']  . "</a> " . $row['datum'] . " </br> </br>";
+ }  
+}else{
+    echo "Žiadne výsledky vyhladávania";
+}
+     }   
+}else{
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit'])){
-    $žáner_fil = $_POST['žáner_fil'];
-    $zoradenie = $_POST['zoradenie'];
-    if(empty($žáner_fil)){
+    //$žáner_fil = $_POST['žáner_fil'];
+    //$zoradenie = $_POST['zoradenie'];
+    if(empty($_POST['žáner_fil']) && !empty($_POST['zoradenie'])){
+        $zoradenie = $_POST['zoradenie'];
         $sqlSel = "SELECT hodnotenie.nazov, hodnotenie.recenzia, hodnotenie.žáner, hodnotenie.rating, hodnotenie.datum, použivateľ.meno, použivateľ.id FROM hodnotenie 
         JOIN použivateľ ON hodnotenie.ID_pouzivatel = použivateľ.id ORDER BY hodnotenie.datum $zoradenie";
-    }else if(!empty($žáner_fil)){
+    }else if(!empty($_POST['žáner_fil']) && !empty($_POST['zoradenie'])){
+        $žáner_fil = $_POST['žáner_fil'];
+        $zoradenie = $_POST['zoradenie'];
     $sqlSel = "SELECT hodnotenie.nazov, hodnotenie.recenzia, hodnotenie.žáner, hodnotenie.rating, hodnotenie.datum, použivateľ.meno, použivateľ.id FROM hodnotenie 
- JOIN použivateľ ON hodnotenie.ID_pouzivatel = použivateľ.id ORDER BY hodnotenie.datum $zoradenie WHERE hodnotenie.žáner='$žáner_fil';";
+ JOIN použivateľ ON hodnotenie.ID_pouzivatel = použivateľ.id WHERE hodnotenie.žáner='$žáner_fil' ORDER BY hodnotenie.datum $zoradenie;";
  }
-}else{
+}else if (!isset($sqlSel)){
     $sqlSel = "SELECT hodnotenie.nazov, hodnotenie.recenzia, hodnotenie.žáner, hodnotenie.rating, hodnotenie.datum, použivateľ.meno, použivateľ.id FROM hodnotenie 
  JOIN použivateľ ON hodnotenie.ID_pouzivatel = použivateľ.id ORDER BY hodnotenie.datum DESC;";
 
@@ -76,14 +107,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit'])){
  $result = mysqli_query($conn, $sqlSel);
 if(mysqli_num_rows($result) > 0){
   while($row = mysqli_fetch_assoc($result)){
-    echo "film: ". $row['nazov'] . " recenzia: ". $row['recenzia'] . " hodnotenie: ". $row['rating'] . ' od: <a href="profil_pouzivatela.php?id=' . $row["id"] . '">' . $row['meno'] . '</a> ' . " zverejnené: " . $row['datum'] . "</br> </br>";
+    echo "film: ". $row['nazov'] . " recenzia: ". $row['recenzia'] . "</br>hodnotenie: ". $row['rating'] . ' od: <a href="profil_pouzivatela.php?id=' . $row["id"] . '">' . $row['meno']  . "</a> " . $row['datum'] . " </br> </br>";
  }  
 }else{
     echo "Žiadne výsledky";
     $sqlSel = "SELECT hodnotenie.nazov, hodnotenie.recenzia, hodnotenie.žáner, hodnotenie.rating, hodnotenie.datum, použivateľ.meno, použivateľ.id FROM hodnotenie 
  JOIN použivateľ ON hodnotenie.ID_pouzivatel = použivateľ.id ORDER BY hodnotenie.datum DESC;";
 }
- 
+ }
  
 ?>
 </body>

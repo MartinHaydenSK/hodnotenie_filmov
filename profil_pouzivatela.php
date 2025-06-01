@@ -24,7 +24,7 @@ include_once './action_files/connecting_to_database.php';
     $result = mysqli_query($conn, $sqlSel);
 if(mysqli_num_rows($result) > 0){
   while($row = mysqli_fetch_assoc($result)){
-    echo "film: ". $row['nazov'] . " recenzia: ". $row['recenzia'] . " hodnotenie: ". $row['rating'] . ' od: ' . $row['meno'] . " zverejnené: " . $row['datum'] . "</br> </br>";
+    echo "film: ". $row['nazov'] . " recenzia: ". $row['recenzia'] . "</br>hodnotenie: ". $row['rating'] . ' od: ' . $row['meno'] . " zverejnené: " . $row['datum'] . "</br> </br>";
  }  
 }else{
     echo "Užívatel zatial nemá žiadne recenzie";
