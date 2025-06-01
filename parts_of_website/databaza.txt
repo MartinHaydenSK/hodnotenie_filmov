@@ -1,0 +1,20 @@
+USE hodnotenie_filmov;
+CREATE table chat (
+ID tinyint(3) auto_increment primary key,
+ID_pouzivatel smallint,
+foreign key(ID_pouzivatel) references použivateľ(id),
+sprava varchar(255),
+datum date
+);
+
+CREATE table hodnotenie (
+ID tinyint(3) auto_increment primary key,
+nazov varchar(255),
+recenzia text(2000),
+žáner varchar(15),
+rating tinyint(1),
+ID_pouzivatel smallint,
+foreign key(ID_pouzivatel) references použivateľ(id),
+datum date,
+indexing varchar(255)
+);
